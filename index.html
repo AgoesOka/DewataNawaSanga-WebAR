@@ -9,15 +9,43 @@
   <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-aframe.prod.js"></script>
 
-  <style>
-    body {
-      margin: 0;
-      overflow: hidden;
-    }
-  </style>
+  <link rel="stylesheet" href="./style.css">
 </head>
 
 <body>
+
+<!-- ===== UI Overlay: tidak mempengaruhi logika AR ===== -->
+
+<div id="loadingScreen">
+  <svg class="loading-ornament" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <circle cx="32" cy="32" r="30" stroke="#d4af37" stroke-width="1.2" opacity="0.5"/>
+    <path d="M32 10 L36 26 L52 30 L36 34 L32 50 L28 34 L12 30 L28 26 Z" fill="#d4af37" opacity="0.85"/>
+  </svg>
+  <div class="loading-ring"></div>
+  <div class="loading-title">Dewata Nawa Sanga</div>
+  <div class="loading-subtitle">Menyiapkan pengalaman AR&hellip;</div>
+</div>
+
+<div id="topBar">
+  <span class="topbar-symbol">&#0952;</span>
+  <span class="topbar-title">Dewata Nawa Sanga</span>
+</div>
+
+<div id="scanFrame">
+  <span class="corner tl"></span>
+  <span class="corner tr"></span>
+  <span class="corner bl"></span>
+  <span class="corner br"></span>
+</div>
+
+<div id="instructionCard">
+  <p class="instruction-title">Arahkan kamera ke media target</p>
+  <p class="instruction-sub">Pastikan pencahayaan cukup dan gambar terlihat jelas</p>
+</div>
+
+<div id="foundToast">&#10024; Dewata Nawa Sanga ditemukan</div>
+
+<!-- ===== Akhir UI Overlay ===== -->
 
 <a-scene
     mindar-image="imageTargetSrc: ./targets/targets.mind; filterMinCF:0.0001; filterBeta:0.001;"
@@ -64,17 +92,43 @@
 
 const target = document.querySelector("#target");
 const model = document.querySelector("#dewataModel");
+const scene = document.querySelector("a-scene");
+
+// ---- UI Overlay elements ----
+const loadingScreen = document.querySelector("#loadingScreen");
+const scanFrame = document.querySelector("#scanFrame");
+const instructionCard = document.querySelector("#instructionCard");
+const foundToast = document.querySelector("#foundToast");
+
+function hideLoadingScreen() {
+    if (loadingScreen) loadingScreen.classList.add("hidden");
+}
+
+// Sembunyikan loading screen begitu scene AR siap (atau maksimal 4 detik)
+if (scene) {
+    scene.addEventListener("renderstart", hideLoadingScreen);
+}
+setTimeout(hideLoadingScreen, 4000);
 
 target.addEventListener("targetFound", () => {
     console.log("TARGET DITEMUKAN");
+    if (scanFrame) scanFrame.classList.add("hidden");
+    if (instructionCard) instructionCard.classList.add("hidden");
+    if (foundToast) {
+        foundToast.classList.add("show");
+        setTimeout(() => foundToast.classList.remove("show"), 2200);
+    }
 });
 
 target.addEventListener("targetLost", () => {
     console.log("TARGET HILANG");
+    if (scanFrame) scanFrame.classList.remove("hidden");
+    if (instructionCard) instructionCard.classList.remove("hidden");
 });
 
 model.addEventListener("model-loaded", () => {
     console.log("MODEL BERHASIL DIMUAT");
+    hideLoadingScreen();
 });
 
 model.addEventListener("model-error", (e) => {

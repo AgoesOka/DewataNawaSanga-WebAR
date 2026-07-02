@@ -1,0 +1,233 @@
+/* =========================================================
+   Dewata Nawa Sanga — WebAR UI Skin
+   Tema: kosmologi Hindu-Bali, emas & merah marun, elegan
+   Catatan: hanya styling & overlay UI. Logika AR tidak diubah.
+   ========================================================= */
+
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Poppins:wght@300;400;500;600&display=swap');
+
+:root {
+  --gold: #d4af37;
+  --gold-light: #f4e5b2;
+  --maroon: #4a0e0e;
+  --maroon-deep: #1c0505;
+  --ink: #120404;
+  --cream: #f7ecd8;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  width: 100%;
+  height: 100%;
+  background: var(--ink);
+  font-family: 'Poppins', sans-serif;
+  color: var(--cream);
+}
+
+a-scene {
+  position: fixed;
+  inset: 0;
+}
+
+/* ---------------- Loading Screen ---------------- */
+#loadingScreen {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 18px;
+  background:
+    radial-gradient(circle at 50% 30%, rgba(212,175,55,0.12), transparent 60%),
+    linear-gradient(160deg, var(--maroon-deep) 0%, var(--ink) 70%);
+  transition: opacity 0.8s ease, visibility 0.8s ease;
+}
+
+#loadingScreen.hidden {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.loading-ornament {
+  width: 46px;
+  height: 46px;
+  opacity: 0.85;
+}
+
+.loading-ring {
+  width: 62px;
+  height: 62px;
+  border-radius: 50%;
+  border: 2px solid rgba(212,175,55,0.2);
+  border-top-color: var(--gold);
+  animation: spin 1.1s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.loading-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 26px;
+  letter-spacing: 3px;
+  color: var(--gold-light);
+  text-transform: uppercase;
+  text-align: center;
+}
+
+.loading-subtitle {
+  font-size: 12px;
+  letter-spacing: 1.5px;
+  color: rgba(247,236,216,0.6);
+  text-transform: uppercase;
+}
+
+/* ---------------- Top Bar ---------------- */
+#topBar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 40;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 16px 20px 22px;
+  background: linear-gradient(to bottom, rgba(18,4,4,0.85) 0%, rgba(18,4,4,0) 100%);
+  pointer-events: none;
+}
+
+.topbar-symbol {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 20px;
+  color: var(--gold);
+}
+
+.topbar-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 19px;
+  font-weight: 600;
+  letter-spacing: 2px;
+  color: var(--gold-light);
+  text-transform: uppercase;
+}
+
+/* ---------------- Scan Frame (viewfinder) ---------------- */
+#scanFrame {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  width: min(72vw, 320px);
+  height: min(72vw, 320px);
+  transform: translate(-50%, -50%);
+  z-index: 30;
+  pointer-events: none;
+  transition: opacity 0.5s ease;
+}
+
+#scanFrame.hidden {
+  opacity: 0;
+}
+
+.corner {
+  position: absolute;
+  width: 34px;
+  height: 34px;
+  border: 3px solid var(--gold);
+  opacity: 0.9;
+  animation: pulseCorner 2.4s ease-in-out infinite;
+}
+
+.corner.tl { top: 0; left: 0; border-right: none; border-bottom: none; }
+.corner.tr { top: 0; right: 0; border-left: none; border-bottom: none; }
+.corner.bl { bottom: 0; left: 0; border-right: none; border-top: none; }
+.corner.br { bottom: 0; right: 0; border-left: none; border-top: none; }
+
+@keyframes pulseCorner {
+  0%, 100% { opacity: 0.55; }
+  50% { opacity: 1; }
+}
+
+/* ---------------- Bottom Instruction Card ---------------- */
+#instructionCard {
+  position: fixed;
+  left: 50%;
+  bottom: 34px;
+  transform: translateX(-50%);
+  z-index: 40;
+  width: min(88vw, 380px);
+  padding: 14px 20px;
+  border-radius: 16px;
+  text-align: center;
+  background: rgba(18,4,4,0.72);
+  border: 1px solid rgba(212,175,55,0.35);
+  backdrop-filter: blur(6px);
+  transition: opacity 0.5s ease, transform 0.5s ease;
+}
+
+#instructionCard.hidden {
+  opacity: 0;
+  transform: translateX(-50%) translateY(12px);
+  pointer-events: none;
+}
+
+.instruction-title {
+  font-size: 13.5px;
+  font-weight: 500;
+  color: var(--gold-light);
+  margin: 0 0 3px;
+}
+
+.instruction-sub {
+  font-size: 11.5px;
+  color: rgba(247,236,216,0.65);
+  margin: 0;
+}
+
+/* ---------------- Target Found Toast ---------------- */
+#foundToast {
+  position: fixed;
+  left: 50%;
+  top: 90px;
+  transform: translateX(-50%) translateY(-14px);
+  z-index: 45;
+  padding: 10px 22px;
+  border-radius: 999px;
+  font-size: 12.5px;
+  letter-spacing: 0.5px;
+  color: var(--ink);
+  background: linear-gradient(135deg, var(--gold-light), var(--gold));
+  box-shadow: 0 6px 22px rgba(212,175,55,0.35);
+  opacity: 0;
+  transition: opacity 0.45s ease, transform 0.45s ease;
+  pointer-events: none;
+  white-space: nowrap;
+}
+
+#foundToast.show {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
+/* ---------------- Permission / MindAR default UI polish ---------------- */
+.mindar-ui-overlay {
+  font-family: 'Poppins', sans-serif !important;
+}
+
+.mindar-ui-overlay .mindar-ui-button {
+  background: var(--gold) !important;
+  color: var(--ink) !important;
+  border-radius: 10px !important;
+  font-weight: 600 !important;
+}
