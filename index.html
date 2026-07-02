@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dewata Nawa Sanga AR</title>
+
+    <!-- A-Frame -->
+    <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
+
+    <!-- MindAR -->
+    <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-aframe.prod.js"></script>
+</head>
+
+<body>
+
+<a-scene
+    mindar-image="
+        imageTargetSrc: ./targets/targets.mind;
+        filterMinCF: 0.0001;
+        filterBeta: 0.001;
+    "
+    color-space="sRGB"
+    renderer="colorManagement: true; physicallyCorrectLights"
+    vr-mode-ui="enabled: false"
+    device-orientation-permission-ui="enabled: false"
+>
+
+    <a-assets>
+        <a-asset-item
+            id="dewata"
+            src="./models/DewataNawaSanga.glb">
+        </a-asset-item>
+    </a-assets>
+
+    <a-camera
+        position="0 0 0"
+        look-controls="enabled: false">
+    </a-camera>
+
+    <a-entity
+        id="target"
+        mindar-image-target="targetIndex: 0">
+
+        <a-entity
+            id="compassRoot"
+            compass-follow>
+
+            <a-gltf-model
+                id="dewataModel"
+                src="#dewata"
+                position="0 0 -1.5"
+                rotation="0 0 0"
+                scale="0.2 0.2 0.2">
+            </a-gltf-model>
+
+        </a-entity>
+
+    </a-entity>
+
+</a-scene>
+
+<script>
+
+const target = document.querySelector("#target");
+const model = document.querySelector("#dewataModel");
+
+if (target) {
+
+    target.addEventListener("targetFound", () => {
+        console.log("TARGET DITEMUKAN");
+    });
+
+    target.addEventListener("targetLost", () => {
+        console.log("TARGET HILANG");
+    });
+
+}
+
+if (model) {
+
+    model.addEventListener("model-loaded", () => {
+        console.log("MODEL BERHASIL DIMUAT");
+    });
+
+    model.addEventListener("model-error", (e) => {
+        console.error("MODEL GAGAL DIMUAT", e);
+    });
+
+}
+
+</script>
+
+<script src="js/compass.js"></script>
+
+</body>
+</html>
